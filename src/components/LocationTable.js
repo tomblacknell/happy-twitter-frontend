@@ -68,11 +68,6 @@ class LocationTable extends Component {
                     enableSelectAll={false}
                 >
                     <TableRow>
-                        <TableHeaderColumn colSpan="2" tooltip="Super Header" style={{textAlign: 'center'}}>
-                            Tweets by Location
-                        </TableHeaderColumn>
-                    </TableRow>
-                    <TableRow>
                         <TableHeaderColumn tooltip="Region">Region</TableHeaderColumn>
                         <TableHeaderColumn tooltip="Total">Total</TableHeaderColumn>
                     </TableRow>
