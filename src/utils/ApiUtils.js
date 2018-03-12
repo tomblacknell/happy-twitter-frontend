@@ -7,7 +7,9 @@ const host = 'http://localhost:8000/api';
 const endpoints = {
     totalTweets: { get: () => `${host}/total-tweets/` },
     tweetsByLocation: { get: () => `${host}/tweets-today/` },
-    tweetRate: { get: () => `${host}/tweet-rate/` }
+    tweetRate: { get: () => `${host}/tweet-rate/` },
+    latestTweets: { get: () => `${host}/latest-tweets/` },
+    tweetLocations: { get: () => `${host}/tweet-locations/`}
 };
 
 // GET request function builder
@@ -23,5 +25,7 @@ const fetch = endpoint => endPointParams =>
 export default {
     fetchTotalTweets: fetch(endpoints.totalTweets),
     fetchTweetsByLocation: fetch(endpoints.tweetsByLocation),
-    fetchTweetRate: fetch(endpoints.tweetRate)
+    fetchTweetRate: fetch(endpoints.tweetRate),
+    fetchLatestTweets: fetch(endpoints.latestTweets),
+    fetchTweetLocations: fetch(endpoints.tweetLocations)
 };

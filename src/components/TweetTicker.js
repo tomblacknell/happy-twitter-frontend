@@ -1,10 +1,34 @@
 import React, { Component } from 'react';
+import ApiUtils from '../utils/ApiUtils';
 
 class TweetTicker extends Component {
     constructor(props) {
         super(props);
-        this.state = {tweets:["@tim: Just got a promotion - I'm so happy!! :)"]}
+        this.state = {
+            data:[],
+        }
     }
+
+    isLoading = () => this.state.data === null;
+
+    fetchLatestTweets = () => {
+        ApiUtils.fetchLatestTweets()
+            .then(this.handleFetchLatestTweetsSuccess)
+            .catch(this.handleFetchLatestTweetsFailure);
+    };
+
+    handleFetchLatestTweetsSuccess = response => {
+        console.log("Succeeded in fetching latest tweets");
+        var data = [];
+        JSON.parse(response).forEach(function(tweet) {
+            data.push(tweet);
+        });
+        this.setState({data});
+    };
+
+    handleFetchLatestTweetsFailure = error => {
+        console.log("Failed to fetch latest tweets");
+    };
 
     handleNewTweet(newTweet) {
         let tweets = this.state.tweets;
@@ -12,6 +36,10 @@ class TweetTicker extends Component {
         tweets.unshift(newTweet);
         this.setState({tweets:tweets});
         console.log(this.state.tweets);
+    };
+
+    componentWillMount() {
+        this.fetchLatestTweets();
     }
 
     render() {
@@ -29,12 +57,19 @@ class TweetTicker extends Component {
             'margin-top': '8px'
         };
 
+        if (this.isLoading()) {
+            return <h1>Loading</h1>;
+        }
+
+        console.log("The latest tweets: ");
+        console.log(this.state.data);
+
+        let tickerString = this.state.data.map(function(tweet){
+            return tweet.text;
+        }).join(" ● ");
+
         return (
-            <div style={{padding: 0}}>
-                <marquee style={style} behavior="scroll" direction="left">
-                    <span style={text_style}>{this.state.tweets[0]}</span>
-                </marquee>
-            </div>
+            <marquee>{tickerString}</marquee>
         );
     }
 }

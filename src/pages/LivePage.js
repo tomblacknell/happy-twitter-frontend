@@ -3,11 +3,14 @@ import BarChart from '../components/visualizations/BarChart';
 import TreeMap from '../components/TreeMap';
 import ApiUtils from '../utils/ApiUtils';
 import LocationTable from '../components/LocationTable';
+import Clock from 'react-live-clock';
+import TweetTicker from "../components/TweetTicker";
+import Map from "../components/visualizations/Map";
 
 class LivePage extends Component {
     constructor(props) {
         super(props);
-        this.state = { totalTweets: undefined };
+        this.state = { totalTweets: 0 };
     }
 
     fetchTotalTweets = () => {
@@ -19,7 +22,7 @@ class LivePage extends Component {
     handleFetchTotalTweetsSuccess = response => {
         console.log("Succeeded in fetching total tweets");
         console.log(response);
-        this.setState({totalTweets:response.total_tweets});
+        this.setState({totalTweets: JSON.parse(response.total_tweets)});
     };
 
     handleFetchTotalTweetsFailure = error => {
@@ -33,17 +36,38 @@ class LivePage extends Component {
     render() {
         const totalTweets = this.state.totalTweets;
         return (
-            <div class="keen-dashboard" style={{"padding-top":"40px"}}>
+            <div class="keen-dashboard" style={{"padding-top":"20px"}}>
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-sm-4">
+                        <div class="col-sm-10">
+                            <div class="chart-wrapper">
+                                <div class="chart-stage">
+                                    <div id="grid-1-1">
+                                        <TweetTicker/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="chart-wrapper">
+                                <div class="chart-stage">
+                                    <div id="grid-1-1">
+                                        <Clock format={'HH:mm:ss'} ticking={true} timezone={'Etc/GMT'} />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
                             <div class="chart-wrapper">
                                 <div class="chart-title">
                                     Statistics
                                 </div>
                                 <div class="chart-stage">
                                     <div id="grid-1-1">
-                                        <h3>Total Tweets: {totalTweets}</h3>
+
+                                        <h4>Total Tweets: {totalTweets}</h4>
                                     </div>
                                 </div>
                                 <div class="chart-notes">
@@ -51,14 +75,14 @@ class LivePage extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <div class="chart-wrapper">
                                 <div class="chart-title">
-                                    Top
+                                    Activity Map
                                 </div>
                                 <div class="chart-stage">
                                     <div id="grid-1-1">
-                                        <TreeMap/>
+                                        <Map/>
                                     </div>
                                 </div>
                                 <div class="chart-notes">
@@ -66,7 +90,9 @@ class LivePage extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
                             <div class="chart-wrapper">
                                 <div class="chart-title">
                                     Tweets by Region (All-time)
@@ -81,8 +107,22 @@ class LivePage extends Component {
                                 </div>
                             </div>
                         </div>
+                        <div class="col-sm-6">
+                            <div class="chart-wrapper">
+                                <div class="chart-title">
+                                    Topics This Week
+                                </div>
+                                <div class="chart-stage">
+                                    <div id="grid-1-1">
+                                        <TreeMap/>
+                                    </div>
+                                </div>
+                                <div class="chart-notes">
+                                    Notes about this chart
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="chart-wrapper">

@@ -3,6 +3,7 @@ import Table, { TableBody, TableRowColumn, TableRow } from 'material-ui/Table';
 import Toggle from 'material-ui/Toggle';
 import { reactLocalStorage } from 'reactjs-localstorage';
 import ApiUtils from '../utils/ApiUtils';
+import GoogleMapReact from 'google-map-react';
 
 class SettingsPage extends Component {
     constructor(props) {
@@ -97,7 +98,8 @@ class SettingsPage extends Component {
         const { settings } = this.state;
 
         return (
-            <Table selectable={false}>
+            <div>
+                <Table selectable={false}>
                 <TableBody displayRowCheckbox={false}>
                     <TableRow>
                         <TableRowColumn>
@@ -143,14 +145,15 @@ class SettingsPage extends Component {
                         <TableRowColumn>
                             <Toggle
                                 label="Setting 5"
-                                defaultToggled={settings.setting5}
-                                style={styles.toggle}
-                                onToggle={this.handleSetting5Toggle.bind(this)}
-                            />
-                        </TableRowColumn>
-                    </TableRow>
-                </TableBody>
-            </Table>
+                                    defaultToggled={settings.setting5}
+                                    style={styles.toggle}
+                                    onToggle={this.handleSetting5Toggle.bind(this)}
+                                />
+                            </TableRowColumn>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </div>
         );
     }
 }

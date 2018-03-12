@@ -37,7 +37,10 @@
     "react-vis": "1.8.3",
     "deep-equal": "^1.0.1",
     "prop-types": "^15.6.1",
-    "deepcopy": "^0.6.1"
+    "deepcopy": "^0.6.1",
+    "google-maps": "^3.2.1",
+    "react-google-maps": "^9.4.5",
+    "google-map-react": "^0.34.0"
   },
   "scripts": {
     "start": "react-scripts start",
