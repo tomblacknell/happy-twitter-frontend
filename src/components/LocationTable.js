@@ -11,6 +11,7 @@ import {
 } from 'material-ui/Table';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
+import WordCloud from 'react-d3-cloud';
 
 class LocationTable extends Component {
 

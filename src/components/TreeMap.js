@@ -15,57 +15,39 @@ export default class TreeMap extends React.Component {
         };
 
         const myData = {
-            "hex": "#00bcd4",
+            "color": "#12939A",
             "children": [
                 {
-                    "title": "A",
-                    "hex": "#80d689",
-                    "size": 3000,
-                    "children": [
-                        {"title": "1", "hex": "#12939A", "value": 3938},
-                        {"title": "2", "hex": "#12939A", "value": 3812}
-                    ],
+                    "title": "Level 2",
+                    "color": "#3a9a4c",
+                    "size": 50
                 },
                 {
-                    "title": "B",
-                    "hex": "#80d689",
-                    "children": [
-                        {"title": "3", "hex": "#12939A", "value": 17010},
-                        {"title": "4", "hex": "#12939A", "value": 5842}
-                    ]
+                    "title": "Level 3",
+                    "color": "#3a9a4c",
+                    "size": 25
                 },
                 {
-                    "title": "C",
-                    "hex": "#80d689",
-                    "children": [
-                        {"title": "5", "hex": "#12939A", "value": 721},
-                        {"title": "6", "hex": "#12939A", "value": 4294}
-                    ]
-                },
-                {
-                    "title": "F",
-                    "hex": "#80d689",
-                    "children": [
-                        {"title": "7", "hex": "#12939A", "value": 1302},
-                        {"title": "8", "hex": "#12939A", "value": 2138}
-                    ]
+                    "title": "Level 4",
+                    "color": "#3a9a4c",
+                    "size": 25
                 }
             ]
-        };
+        }
 
         return(
             <Treemap {...{
                 width: 450,
                 height: 450,
                 data: myData,
-                margin: 15,
+                margin: 30,
                 renderMode:'SVG',
-                mode:"circlePack",
+                mode:"squarify",
                 colorType: 'literal',
                 colorRange: ['#88572C'],
                 style:STYLES.SVG,
-                getSize: d => d.value,
-                getColor: d => d.hex,
+                getSize: d => d.size,
+                getColor: d => d.color,
                 getLabel: d => d.name
             }}/>
         );

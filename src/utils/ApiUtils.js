@@ -5,7 +5,7 @@ const host = 'http://localhost:8000/api';
 
 // API endpoints
 const endpoints = {
-    totalTweets: { get: () => `${host}/total-tweets/` },
+    totalTweets: { get: weekView => `${host}/total-tweets/${weekView}` },
     tweetsByLocation: { get: () => `${host}/tweets-today/` },
     tweetRate: { get: () => `${host}/tweet-rate/` },
     latestTweets: { get: () => `${host}/latest-tweets/` },

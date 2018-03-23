@@ -61,15 +61,10 @@ class TweetTicker extends Component {
             return <h1>Loading</h1>;
         }
 
-        console.log("The latest tweets: ");
-        console.log(this.state.data);
-
-        let tickerString = this.state.data.map(function(tweet){
-            return tweet.text;
-        }).join(" ● ");
+        let links = this.state.data.map(tweet => <span style={{marginRight:"2em", marginLeft:"2em", display:"inline-block"}}><a style={{color: "#000000", opacity:"0.87"}} href={"http://twitter.com/any/status/"+tweet._id}>{tweet.text}</a></span>);
 
         return (
-            <marquee>{tickerString}</marquee>
+            <marquee style={{lineHeight:"1"}}>{links}</marquee>
         );
     }
 }

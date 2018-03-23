@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { OrdinalFrame } from 'semiotic';
 import ApiUtils from '../../utils/ApiUtils';
+import CircularProgress from 'material-ui/CircularProgress';
 
 class BarChart extends Component {
     constructor(props) {
         super(props);
-        this.state = { width: 0, height: 0, data:[], tweetRate:[] };
+        this.state = { width: 0, height: 0, data:[], tweetRate:[], isLoaded:false };
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     }
 
@@ -41,9 +42,7 @@ class BarChart extends Component {
             }
         });
 
-        console.log(final);
-
-        this.setState({data:final});
+        this.setState({data:final, isLoaded:true});
     };
 
     handleFetchTweetRateFailure = error => {
@@ -68,16 +67,25 @@ class BarChart extends Component {
             width: '100%',
         };
 
+        const isLoaded = this.state.isLoaded;
+        const data = this.state.data;
+        const width = this.state.width-67;
+        const height = 75;
+
         return (
-            <OrdinalFrame
-                size={[this.state.width, 75]}
-                data={this.state.data}
-                oAccessor={"time"}
-                rAccessor={"tweets"}
-                style={{ fill: "#f0a535", stroke: "white" }}
-                type={"bar"}
-                oLabel={false}
-            />
+            <div style={{width:width, height:height}}>
+                {isLoaded ?
+                    <OrdinalFrame
+                        size={[width, height]}
+                        data={data}
+                        oAccessor={"time"}
+                        rAccessor={"tweets"}
+                        style={{ fill: "#00bcd4", stroke: "white" }}
+                        type={"bar"}
+                        oLabel={false}
+                    /> : <CircularProgress style={{marginLeft:width/2}}/>
+                }
+            </div>
         );
     }
 }
