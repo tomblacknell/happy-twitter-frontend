@@ -64,7 +64,7 @@ class TweetTicker extends Component {
         let links = this.state.data.map(tweet => <span style={{marginRight:"2em", marginLeft:"2em", display:"inline-block"}}><a style={{color: "#000000", opacity:"0.87"}} href={"http://twitter.com/any/status/"+tweet._id}>{tweet.text}</a></span>);
 
         return (
-            <marquee style={{lineHeight:"1"}}>{links}</marquee>
+            <marquee>{links}</marquee>
         );
     }
 }

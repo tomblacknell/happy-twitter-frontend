@@ -1,15 +1,14 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-
-import SettingsPage from '../pages/SettingsPage';
 import LivePage from '../pages/LivePage';
+import AdvancedTopicExplorePage from '../pages/AdvancedTopicExplorer';
 
 const Main = props => {
 
     return (
       <Switch>
           <Route exact path="/" component={LivePage}/>
-          <Route exact path="/settings" component={SettingsPage}/>
+          <Route exact path="/explore" component={AdvancedTopicExplorePage}/>
       </Switch>
     );
 

@@ -7,9 +7,12 @@ const host = 'http://localhost:8000/api';
 const endpoints = {
     totalTweets: { get: weekView => `${host}/total-tweets/${weekView}` },
     tweetsByLocation: { get: () => `${host}/tweets-today/` },
-    tweetRate: { get: () => `${host}/tweet-rate/` },
+    tweetRate: { get: weekView => `${host}/tweet-rate/${weekView}` },
     latestTweets: { get: () => `${host}/latest-tweets/` },
-    tweetLocations: { get: () => `${host}/tweet-locations/`}
+    tweetLocations: { get: weekView => `${host}/tweet-locations/${weekView}`},
+    topicExplore: { get: weekView => `${host}/topic-explore/${weekView}`},
+    regionStats: { get: params => `${host}/region-stats/${params.regionName}/${params.weekView}` },
+    topics: { get: weekView => `${host}/topics/${weekView}`}
 };
 
 // GET request function builder
@@ -27,5 +30,8 @@ export default {
     fetchTweetsByLocation: fetch(endpoints.tweetsByLocation),
     fetchTweetRate: fetch(endpoints.tweetRate),
     fetchLatestTweets: fetch(endpoints.latestTweets),
-    fetchTweetLocations: fetch(endpoints.tweetLocations)
+    fetchTweetLocations: fetch(endpoints.tweetLocations),
+    fetchTopicExplore: fetch(endpoints.topicExplore),
+    fetchRegionStats: fetch(endpoints.regionStats),
+    fetchTopics: fetch(endpoints.topics)
 };

@@ -79,7 +79,7 @@ class LocationTable extends Component {
                     showRowHover={true}
                     stripedRows={true}
                 >
-                    {this.state.data.slice(0,9).map(row => (
+                    {this.state.data.slice(0,26).map(row => (
                         <TableRow>
                             <TableRowColumn>{row._id}</TableRowColumn>
                             <TableRowColumn>{row.number}</TableRowColumn>
