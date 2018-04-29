@@ -2,8 +2,18 @@ import React from 'react';
 import * as d3 from 'd3';
 import ReactDOM from 'react-dom';
 import ApiUtils from '../utils/ApiUtils';
+import ContainerDimensions from 'react-container-dimensions';
 
-export default class TreeMap extends React.Component {
+/*
+ TopicTreemap.js
+ Authored by Tom Blacknell
+
+ Creates tree map of the top-8 terms for each 10 topics
+
+ Adapted from demonstration: https://bl.ocks.org/mbostock/4063582
+ */
+
+export default class TopicTreemap extends React.Component {
 
     constructor(props) {
         super(props);
@@ -31,7 +41,6 @@ export default class TreeMap extends React.Component {
     }
 
     createTreeMap(dom) {
-
         let svg = d3.select(dom),
             width = +svg._groups[0][0].clientWidth,
             height = +svg.attr("height");
@@ -274,8 +283,6 @@ export default class TreeMap extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("Component recieved new props: ");
-        console.log(nextProps);
         this.setState({width:nextProps.width});
     }
 
@@ -286,9 +293,12 @@ export default class TreeMap extends React.Component {
     }
 
     render() {
-        console.log("Rendering treemap SVG");
         return(
-            <svg width="100%" height="543"></svg>
+                <ContainerDimensions>
+                    { ({width}) =>
+                        <svg width="100%" height="543"></svg>
+                    }
+                </ContainerDimensions>
         );
     }
 }

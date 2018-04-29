@@ -1,17 +1,27 @@
 import React, { Component } from 'react';
 import ApiUtils from '../utils/ApiUtils';
 import CircularProgress from 'material-ui/CircularProgress';
-import { OrdinalFrame, Legend } from 'semiotic';
+import { OrdinalFrame } from 'semiotic';
 import ContainerDimensions from 'react-container-dimensions';
 
-class RegionExplore extends Component {
+/*
+ RegionalTopicDistributionPieChart.js
+ Authored by Tom Blacknell
+
+ Displays total tweets for a region,
+ as well as a pie chart of the topic distribution for that region.
+
+ Uses the Semiotic data vis library
+*/
+
+class RegionalTopicDistributionPieChart extends Component {
     constructor(props) {
         super(props);
         this.state = {data:undefined}
     }
 
+    // fetch requried metrics from backend
     fetchRegionStats = (regionName, weekView) => {
-        console.log("Fetching region stats, regionName = " + regionName + ", weekView=" + weekView)
         ApiUtils.fetchRegionStats({regionName, weekView})
             .then(this.handleFetchRegionStatsSuccess)
             .catch(this.handleFetchRegionStatsFailure);
@@ -19,7 +29,6 @@ class RegionExplore extends Component {
 
     handleFetchRegionStatsSuccess = response => {
         console.log("Succeeded in fetching region stats");
-        //console.log(response);
         this.setState({data: response});
     };
 
@@ -28,20 +37,18 @@ class RegionExplore extends Component {
     };
 
     componentWillMount() {
-        console.log("Region explore props: ");
-        console.log(this.props);
         this.fetchRegionStats(this.props.region, this.props.weekView ? 1 : 0);
     }
 
     componentWillReceiveProps(nextProps) {
+        this.setState({data:undefined});
         this.fetchRegionStats(nextProps.region, nextProps.weekView ? 1 : 0)
     }
 
     render() {
         const data = this.state.data;
-        //console.log("Data from state: ");
-        //console.log(data);
 
+        // colours correspond to colours used in treemap visualization
         const colors = ["#2196F3","#F44336","#4CAF50","#FFC107","#009688","#9C27B0","#FF5722","#CDDC39","#3F51B5","#03A9F4"];
 
         return (
@@ -80,4 +87,4 @@ class RegionExplore extends Component {
     }
 }
 
-export default RegionExplore;
+export default RegionalTopicDistributionPieChart;

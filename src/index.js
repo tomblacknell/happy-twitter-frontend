@@ -3,12 +3,16 @@ import './index.css';
 import App from './App';
 import { render } from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
-import { CookiesProvider } from 'react-cookie';
+
+/*
+ index.js
+ Authored by Tom Blacknell
+
+ Auto-generated
+*/
 
 render((
-    <CookiesProvider>
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>
-    </CookiesProvider>
+    <BrowserRouter>
+        <App />
+    </BrowserRouter>
 ), document.getElementById('root'));

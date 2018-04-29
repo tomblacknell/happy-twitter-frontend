@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import BarChart from '../components/visualizations/BarChart';
-import TreeMap from '../components/TreeMap';
+import BarChart from '../components/TweetRateBarChart';
+import TreeMap from '../components/TopicTreemap';
 import ApiUtils from '../utils/ApiUtils';
 import Clock from 'react-live-clock';
 import TweetTicker from "../components/TweetTicker";
-import MapContainer from "../components/visualizations/Map";
+import MapContainer from "../components/TweetMap";
 import Snackbar from 'material-ui/Snackbar';
 import RaisedButton from 'material-ui/RaisedButton';
-import RegionExplore from "../components/RegionExplore";
-import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import RegionExplore from "../components/RegionalTopicDistributionPieChart";
+import {Card, CardActions, CardHeader} from 'material-ui/Card';
 import ReactTooltip from 'react-tooltip'
 import { reactLocalStorage } from 'reactjs-localstorage';
 import Drawer from 'material-ui/Drawer';
@@ -18,10 +18,17 @@ import { Link } from 'react-router-dom';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import Dialog from 'material-ui/Dialog';
-import AdvancedTopicExplorer from '../pages/AdvancedTopicExplorer';
-import LocationTable from "../components/LocationTable";
+import AdvancedTopicExplorer from '../components/AdvancedTopicExplorer';
 
-class LivePage extends Component {
+/*
+ Dashboard.js
+ Authored by Tom Blacknell
+
+ Component renders the dashboard layout and visualizations
+*/
+
+class Dashboard extends Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -30,6 +37,7 @@ class LivePage extends Component {
             weekView: reactLocalStorage.getObject("settings").defaultTimeSpan,
             open:false,
             region:reactLocalStorage.getObject("settings").defaultLocation,
+            timeFormat:reactLocalStorage.getObject("settings").timeFormat,
             treeMapWidth:60,
             settings:undefined,
             settingSavedAlertOpen:false,
@@ -38,6 +46,7 @@ class LivePage extends Component {
         this.handleRegionChange = this.handleRegionChange.bind(this);
     }
 
+    // event handler for default location setting change
     handleDefaultLocationChange(event, index, value) {
         this.setState(prevState => ({
             settings: {
@@ -48,6 +57,18 @@ class LivePage extends Component {
         }));
     }
 
+    // event handler for time format setting change
+    handleTimeFormatChange(event, index, value) {
+        this.setState(prevState => ({
+            settings: {
+                ...prevState.settings,
+                timeFormat: value
+            },
+            settingSavedAlertOpen:true
+        }));
+    }
+
+    // event handler for default time span setting change
     handleDefaultTimeSpanChange(event, index, value) {
         this.setState(prevState => ({
             settings: {
@@ -58,6 +79,7 @@ class LivePage extends Component {
         }));
     }
 
+    // make API call for  total tweet count
     fetchTotalTweets = () => {
         ApiUtils.fetchTotalTweets(this.state.weekView ? 1 : 0)
             .then(this.handleFetchTotalTweetsSuccess)
@@ -66,7 +88,6 @@ class LivePage extends Component {
 
     handleFetchTotalTweetsSuccess = response => {
         console.log("Succeeded in fetching total tweets");
-        //console.log(response);
         this.setState({totalTweets: JSON.parse(response)[0].count});
     };
 
@@ -74,22 +95,25 @@ class LivePage extends Component {
         console.log("Failed to fetch total tweets");
     };
 
+    // when the component is ready to mount the DOM
     componentWillMount() {
         this.fetchTotalTweets();
         const settings = reactLocalStorage.getObject("settings");
         this.setState({settings:settings});
     }
 
+    // update the local settings stoage
     updateSettings() {
         reactLocalStorage.setObject("settings", this.state.settings);
     }
 
+    // after the component has mounted the DOM
     componentDidMount() {
         const width = document.getElementById("treemap").clientWidth;
-        console.log("Div width: " + width);
         this.setState({treeMapWidth: width});
     }
 
+    // closes the pop-up notifications
     handleRequestClose = () => {
         this.setState({
             open: false,
@@ -97,12 +121,14 @@ class LivePage extends Component {
         });
     };
 
+    // change the region viewed in the regional topic distribution pie chart
     handleRegionChange(name) {
         this.setState({
             region: name
         });
     }
 
+    // event handler for toggling the time span
     handleTimeSpanChanged() {
         let newTimeSpan = !this.state.weekView;
         this.setState({weekView:newTimeSpan, open:true}, function () {
@@ -110,16 +136,20 @@ class LivePage extends Component {
         });
     }
 
+    // open the topic explorer modal
     handleTopicExplorerOpen = () => {
         this.setState({topicExplorerOpen: true});
     };
 
+    // close the topic explorer modal
     handleTopicExplorerClose = () => {
         this.setState({topicExplorerOpen: false});
     };
 
+    // toggle open/closed the settings modal
     handleDrawerToggle = () => this.setState({drawerOpen: !this.state.drawerOpen});
 
+    // render the dashboard
     render() {
         const { settings } = this.state;
         const totalTweets = this.state.totalTweets;
@@ -128,6 +158,7 @@ class LivePage extends Component {
         const date = new Date();
         const cardStyle = {marginTop:"5px", marginBottom:"5px"};
         const region = this.state.region;
+        const formatted = this.state.timeFormat + ":mm:ss";
 
         this.updateSettings();
 
@@ -161,25 +192,65 @@ class LivePage extends Component {
                                 labelStyle={{paddingLeft:"12px"}}
                                 floatingLabelStyle={{paddingLeft:"12px"}}
                             >
-                                <MenuItem value={"London"} primaryText="London" />
-                                <MenuItem value={"Hampshire"} primaryText="Hampshire" />
-                                <MenuItem value={"Greater Manchester"} primaryText="Manchester" />
-                                <MenuItem value={"Highland"} primaryText="Highland" />
-                                <MenuItem value={"West Midlands"} primaryText="West Midlands" />
-                                <MenuItem value={"City of Edinburgh"} primaryText="Edinburgh" />
-                                <MenuItem value={"East Sussex"} primaryText="East Sussex" />
-                                <MenuItem value={"Nottinghamshire"} primaryText="Nottinghamshire" />
-                                <MenuItem value={"Devon"} primaryText="Devon" />
-                                <MenuItem value={"Lancashire"} primaryText="Lancashire" />
-                                <MenuItem value={"Staffordshire"} primaryText="Staffordshire" />
                                 <MenuItem value={"Glasgow City"} primaryText="Glasgow" />
+                                <MenuItem value={"City of Edinburgh"} primaryText="Edinburgh" />
+                                <MenuItem value={"Highland"} primaryText="Highland"/>
+                                <MenuItem value={"Cardiff"} primaryText="Cardiff"/>
+                                <MenuItem value={"County Antrim"} primaryText="County Antrim"/>
+                                <MenuItem value={"London"} primaryText="London"/>
+                                <MenuItem value={"Highland"} primaryText="Highland"/>
+                                <MenuItem value={"Highland"} primaryText="Highland"/>
+                                <MenuItem value={"Greater Manchester"} primaryText="Manchester" />
+                                <MenuItem value={"West Midlands"} primaryText="West Midlands" />
+                                <MenuItem value={"Nottinghamshire"} primaryText="Nottinghamshire" />
+                                <MenuItem value={"Lancashire"} primaryText="Lancashire" />
+                                <MenuItem value={"Devon"} primaryText="Devon" />
+                                <MenuItem value={"Staffordshire"} primaryText="Staffordshire" />
+                                <MenuItem value={"Hampshire"} primaryText="Hampshire" />
                                 <MenuItem value={"Tyne and Wear"} primaryText="Tyne and Wear" />
                                 <MenuItem value={"Cambridgeshire"} primaryText="Cambridgeshire" />
-                                <MenuItem value={"North Yorkshire"} primaryText="North Yorkshire" />
-                                <MenuItem value={"Essex"} primaryText="Essex" />
                                 <MenuItem value={"Leicestershire"} primaryText="Leicestershire" />
-                                <MenuItem value={"Kent"} primaryText="Kent" />
+                                <MenuItem value={"Essex"} primaryText="Essex" />
+                                <MenuItem value={"North Yorkshire"} primaryText="North Yorkshire" />
                                 <MenuItem value={"Cheshire"} primaryText="Cheshire" />
+                                <MenuItem value={"Kent"} primaryText="Kent" />
+                                <MenuItem value={"East Sussex"} primaryText="East Sussex" />
+                                <MenuItem value={"Derbyshire"} primaryText="Derbyshire" />
+                                <MenuItem value={"Surrey"} primaryText="Surrey" />
+                                <MenuItem value={"Somerset"} primaryText="Somerset" />
+                                <MenuItem value={"Norfolk"} primaryText="Norfolk" />
+                                <MenuItem value={"Suffolk"} primaryText="Suffolk" />
+                                <MenuItem value={"Cornwall"} primaryText="Cornwall" />
+                                <MenuItem value={"Oxfordshire"} primaryText="Oxfordshire" />
+                                <MenuItem value={"Buckinghamshire"} primaryText="Buckinghamshire" />
+                                <MenuItem value={"West Sussex"} primaryText="West Sussex" />
+                                <MenuItem value={"Dorset"} primaryText="Dorset" />
+                                <MenuItem value={"East Yorkshire"} primaryText="East Yorkshire" />
+                                <MenuItem value={"Bristol"} primaryText="Bristol" />
+                                <MenuItem value={"North Somerset"} primaryText="North Somerset" />
+                                <MenuItem value={"Shropshire"} primaryText="Shropshire" />
+                                <MenuItem value={"Berkshire"} primaryText="Berkshire" />
+                                <MenuItem value={"West Yorkshire"} primaryText="West Yorkshire" />
+                                <MenuItem value={"Wiltshire"} primaryText="Wiltshire" />
+                                <MenuItem value={"County Durham"} primaryText="County Durham" />
+                                <MenuItem value={"Lincolnshire"} primaryText="Lincolnshire" />
+                                <MenuItem value={"Northumberland"} primaryText="Northumberland" />
+                                <MenuItem value={"Cumbria"} primaryText="Cumbria" />
+                                <MenuItem value={"Bedfordshire"} primaryText="Bedfordshire" />
+                                <MenuItem value={"Herefordshire"} primaryText="Hertfordshire" />
+                                <MenuItem value={"Northamptonshire"} primaryText="Northamptonshire" />
+                                <MenuItem value={"Gloucestershire"} primaryText="Gloucestershire" />
+                            </SelectField>
+                            <SelectField
+                                floatingLabelText="Time Format"
+                                value={settings.timeFormat}
+                                onChange={this.handleTimeFormatChange.bind(this)}
+                                style={{width:"200px", paddingLeft:"25px"}}
+                                labelStyle={{paddingLeft:"12px"}}
+                                floatingLabelStyle={{paddingLeft:"12px"}}
+                            >
+                                <MenuItem value={"HH"} primaryText="24-hr" />
+                                <MenuItem value={"hh"} primaryText="12-hour" />
                             </SelectField>
                             <FlatButton label="Close Settings" style={{marginTop:"12px"}} fullWidth={true} onClick={this.handleDrawerToggle} />
                         </div>
@@ -192,7 +263,7 @@ class LivePage extends Component {
                                 <span style={{fontWeight:"500", color: "rgba(0, 0, 0, 0.87)",marginRight:"2em", marginLeft:"2em", display:"inline-block"}}>
                                     {date.toLocaleString('en-us', {  weekday: 'long' }) + " " + date.getDate() + " " + (monthNames[date.getMonth()+1]) + " " +date.getFullYear() + " "}
                                 </span>
-                                <Clock format={'HH:mm:ss'} ticking={true} timezone={'Etc/GMT'} />
+                                <Clock format={formatted} ticking={true} timezone={'Etc/GMT'} />
                             </Card>
                         </div>
                         <div class="col-sm-9">
@@ -245,7 +316,7 @@ class LivePage extends Component {
                                     <Card style={cardStyle}>
                                         <CardHeader
                                             title={weekView ? "Topics (Past 7 Days)" : "Topics (Past 30 Days)"}
-                                            subtitle="Top 10 Topics with the Top 5 Words per Topic"
+                                            subtitle="Top 10 Topics with the Top 8 Words per Topic"
                                             data-tip="Each topic is defined as a collection of terms, each colour represents a different topic"
                                         />
                                         <div id="treemap" style={{width:"100%"}}>
@@ -302,6 +373,7 @@ class LivePage extends Component {
                     }}
                     open={this.state.topicExplorerOpen}
                 >
+                    <p>An adaption of <a href="https://github.com/cpsievert/LDAvis">LDAvis</a>, a topic model visualization tool created by Carson Sievet and Kenneth E. Shirley.</p>
                     <AdvancedTopicExplorer weekView={weekView} />
                 </Dialog>
             </div>
@@ -309,4 +381,4 @@ class LivePage extends Component {
     }
 }
 
-export default LivePage;
+export default Dashboard;

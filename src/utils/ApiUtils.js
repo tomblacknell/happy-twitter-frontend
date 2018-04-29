@@ -1,6 +1,13 @@
 import axios from 'axios';
 
-// REST API root URL
+/*
+ ApiUtils.js
+ Authored by Tom Blacknell
+
+ Uses axios library to make HTTP requests to the back-end subsystem
+ */
+
+// root URL for the API
 const host = 'http://localhost:8000/api';
 
 // API endpoints
